@@ -3,7 +3,7 @@ import * as React from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
-import { Button, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -15,7 +15,10 @@ import { red } from '@mui/material/colors';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { NavLink } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
+import CommentsList from './CommentsList/CommentsList';
+import FormOfComments from './FormOfComments/FormOfComments';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -28,7 +31,15 @@ const ExpandMore = styled((props) => {
   })
 }));
 
-export default function PostItem({ id, title, avatar }) {
+const Comments = () => {
+  const [card, setCard] = React.useState({});
+  const { id } = useParams();
+  console.log('id', id);
+  React.useEffect(() => {
+    fetch(`http://localhost:3001/api/v3/posts/${id}`)
+      .then((response) => response.json())
+      .then((dataFromServer) => setCard(dataFromServer));
+  }, []);
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -50,14 +61,14 @@ export default function PostItem({ id, title, avatar }) {
               R
             </Avatar>
           }
-          title={title}
-          subheader={id}
+          title={card.title}
+          subheader={card.id}
         />
 
         <CardMedia
           component="img"
-          height="240"
-          image={avatar}
+          height="400"
+          image={card.avatar}
           alt="Paella dish"
         />
         <CardContent>
@@ -85,13 +96,12 @@ export default function PostItem({ id, title, avatar }) {
           </ExpandMore>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <NavLink to={`/${id}`}>
-              <Button variant="text">Leave a comment</Button>
-            </NavLink>
-          </CardContent>
+          <FormOfComments id={id} />
+          <CommentsList id={id} />
         </Collapse>
       </Card>
     </Grid>
   );
-}
+};
+
+export default Comments;

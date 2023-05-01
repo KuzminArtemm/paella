@@ -9,13 +9,20 @@ import thunk from 'redux-thunk';
 
 import App from './App';
 import rootReducer from './redux/reducers/rootReducer';
-import initState from './redux/store';
+import initState, { LOCAL_STORAGE_KEY } from './redux/store';
 
 const store = createStore(
   rootReducer,
   initState(),
   composeWithDevTools(applyMiddleware(thunk))
 );
+
+store.subscribe(() => {
+  window.localStorage.setItem(
+    LOCAL_STORAGE_KEY,
+    JSON.stringify(store.getState())
+  );
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
