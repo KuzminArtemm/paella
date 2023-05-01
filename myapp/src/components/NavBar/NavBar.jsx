@@ -70,8 +70,20 @@ const pages = [
     path: '/'
   },
   {
+    title: 'Posts',
+    path: '/postslist'
+  },
+  {
     title: 'createNewPost',
     path: '/postform'
+  },
+  {
+    title: 'SignInPerson',
+    path: '/signin'
+  },
+  {
+    title: 'SignUpPerson',
+    path: '/signup'
   }
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -94,6 +106,10 @@ function NavBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const handlelogOut = () => {
+    localStorage.clear();
+    window.location.href = '/';
+  };
 
   const dispatch = useDispatch();
   const handleSearchInput = (event) => {
@@ -101,7 +117,7 @@ function NavBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -228,7 +244,9 @@ function NavBar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center" onClick={handlelogOut}>
+                    {setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
